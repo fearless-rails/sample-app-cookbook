@@ -69,6 +69,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # to skip installing and copying to Vagrant's shelf.
   # config.berkshelf.except = []
 
+  ssh_key = File.read(File.expand_path('~/.ssh/id_rsa.pub'))
+
   config.vm.provision :chef_solo do |chef|
     chef.json = {
       mysql: {
@@ -78,6 +80,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       },
       postgresql: {
         password: { "postgres" => "password" }
+      },
+      "sample-app" => {
+        deploy_keys: [ ssh_key ]
       }
     }
 

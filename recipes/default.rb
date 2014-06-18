@@ -23,3 +23,9 @@ postgresql_database "sample_app_production" do
   )
   action :create
 end
+
+# add our deploy user
+user_account "deploy" do
+  action :create
+  ssh_keys node['sample-app']['deploy_keys']
+end
