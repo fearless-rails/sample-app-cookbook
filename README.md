@@ -1,12 +1,14 @@
 # sample-app-cookbook
 
-TODO: Enter the cookbook description here.
+Provisions a server for the sample app included in [Fearless Rails Deployment](https://fearlessrailsdeployment.com).
 
 ## Supported Platforms
 
-TODO: List your supported platforms.
+Ubuntu 12.04 LTS
 
 ## Attributes
+
+TODO: Make these real.
 
 <table>
   <tr>
@@ -48,4 +50,4 @@ Include `sample-app` in your node's `run_list`:
 
 ## License and Authors
 
-Author:: YOUR_NAME (<YOUR_EMAIL>)
+Author:: Zachary Danger Campbell (<zacharydangercampbell@gmail.com>)
