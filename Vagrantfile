@@ -81,12 +81,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       postgresql: {
         password: { "postgres" => "password" }
       },
+      # gotta fix rvm for chef-solo on vagrant -_-
+      rvm: {
+        vagrant: {
+          system_chef_solo:  "/usr/bin/chef-solo"
+        }
+      },
       "sample-app" => {
         deploy_keys: [ ssh_key ]
       }
     }
 
     chef.run_list = [
+        "recipe[rvm::vagrant]",
         "recipe[sample-app::default]"
     ]
   end

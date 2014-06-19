@@ -29,3 +29,15 @@ user_account "deploy" do
   action :create
   ssh_keys node['sample-app']['deploy_keys']
 end
+
+# install rvm and ruby 2.1.2 for the "deploy" user
+node.default['rvm']['user_installs'] = [
+  { 'user'          => 'deploy',
+    'default_ruby'  => '2.1.2',
+    'rubies'        => ['2.1.2']
+  }
+]
+
+package "gawk" # rvm requirement for installing 2.1.2
+
+include_recipe "rvm::user"
