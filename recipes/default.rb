@@ -41,3 +41,10 @@ node.default['rvm']['user_installs'] = [
 package "gawk" # rvm requirement for installing 2.1.2
 
 include_recipe "rvm::user"
+
+# create an rvm wrapper for our specific version of bundler
+rvm_wrapper "deploy" do
+  ruby_string "2.1.2@global"
+  binary      "bundle"
+  user        "deploy"
+end
