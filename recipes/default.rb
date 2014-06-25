@@ -48,3 +48,25 @@ rvm_wrapper "deploy" do
   binary      "bundle"
   user        "deploy"
 end
+
+# setup the deployment target directories and configuration files
+%w(sample-app sample-app/shared sample-app/shared/config sample-app/shared/tmp sample-app/shared/tmp/pids sample-app/shared/tmp/sockets).each do |dir|
+  directory "/home/deploy/#{dir}" do
+    action :create
+    owner "deploy"
+    group "deploy"
+    recursive true
+  end
+end
+
+# add  config/database.yml
+template "/home/deploy/sample-app/shared/config/database.yml" do
+  variables(
+    database: node['sample-app']['database']['database'],
+    username: node['sample-app']['database']['username'],
+    password: node['sample-app']['database']['password'],
+    host:     node['sample-app']['database']['host']
+  )
+  owner 'deploy'
+  group 'deploy'
+end
