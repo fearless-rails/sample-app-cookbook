@@ -70,3 +70,15 @@ template "/home/deploy/sample-app/shared/config/database.yml" do
   owner 'deploy'
   group 'deploy'
 end
+
+# add unicorn configuration
+template "/home/deploy/sample-app/shared/unicorn.rb" do
+  variables(
+    :pid_file_path => '/home/deploy/sample-app/shared/pids/unicorn.pid',
+    :socket_path   => '/home/deploy/sample-app/shared/sockets/unicorn.sock',
+    :working_directory => '/home/deploy/sample-app/current',
+    :worker_processes  => 2
+  )
+  owner 'deploy'
+  group 'deploy'
+end
