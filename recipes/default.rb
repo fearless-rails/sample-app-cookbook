@@ -98,3 +98,7 @@ runit_service "sample-app" do
   owner 'deploy'
   group 'deploy'
 end
+
+# install redis
+include_recipe "redisio::install"
+include_recipe "redisio::enable"
