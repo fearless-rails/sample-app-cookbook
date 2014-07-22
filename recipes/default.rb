@@ -82,3 +82,19 @@ template "/home/deploy/sample-app/shared/unicorn.rb" do
   owner 'deploy'
   group 'deploy'
 end
+
+include_recipe 'runit'
+
+# tell runit to run our app
+runit_service "sample-app" do
+  options({
+    :working_dir     => '/home/deploy/sample-app/current',
+    :bundle_command  => '/home/deploy/.rvm/bin/deploy_bundle',
+    :path_to_gemfile => '/home/deploy/sample-app/current/Gemfile',
+    :unicorn_pid     => '/home/deploy/sample-app/shared/tmp/pids/unicorn.pid',
+    :unicorn_config  => '/home/deploy/sample-app/shared/unicorn.rb',
+    :user            => 'deploy'
+  })
+  owner 'deploy'
+  group 'deploy'
+end
