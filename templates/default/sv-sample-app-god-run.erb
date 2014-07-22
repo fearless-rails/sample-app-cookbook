@@ -1,0 +1,12 @@
+#!/bin/bash
+exec 2>&1
+
+USER=<%= @options[:user] %>
+GROUP=<%= @options[:group] %>
+CONFIG=<%= @options[:god_config] %>
+PID_FILE=<%= @options[:unicorn_pid] %>
+export HOME=/home/<%= @options[:user] %>
+
+trap 'kill -HUP %1' 1 2 13 15
+
+/usr/bin/chpst -u $USER:$GROUP <%= @options[:god_command] %> --no-daemonize --config-file $CONFIG --no-syslog --attach `cat $PID_FILE` & wait

@@ -102,3 +102,34 @@ runit_service "sample-app" do
   owner 'deploy'
   group 'deploy'
 end
+
+# configure god.rb and its runit service
+template "/home/deploy/sample-app/shared/config/sample-app.god" do
+  variables({
+    :rails_root   => '/home/deploy/sample-app/current',
+    :worker_count => 2,
+    :bundle_command => '/home/deploy/.rvm/bin/deploy_bundle'
+  })
+end
+
+rvm_gem "god" do
+  ruby_string "2.1.2@global"
+  action :install
+  user "deploy"
+end
+
+rvm_wrapper "deploy" do
+  ruby_string "2.1.2@global"
+  binary      "god"
+  user        "deploy"
+end
+
+runit_service 'sample-app-god' do
+  options({
+    :user => 'deploy',
+    :group => 'deploy',
+    :god_config => '/home/deploy/sample-app/shared/config/sample-app.god',
+    :unicorn_pid => '/home/deploy/sample-app/shared/tmp/pids/unicorn.pid',
+    :god_command => '/home/deploy/.rvm/bin/deploy_god'
+  })
+end
