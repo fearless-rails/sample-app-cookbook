@@ -8,6 +8,10 @@
 # runs apt-get update for us, basically
 include_recipe "apt"
 
+# install redis
+include_recipe "redisio::install"
+include_recipe "redisio::enable"
+
 # installs the postgresql server
 include_recipe "postgresql::server"
 
@@ -98,7 +102,3 @@ runit_service "sample-app" do
   owner 'deploy'
   group 'deploy'
 end
-
-# install redis
-include_recipe "redisio::install"
-include_recipe "redisio::enable"
