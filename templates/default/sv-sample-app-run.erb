@@ -1,0 +1,98 @@
+#!/bin/bash
+
+# configuration variables
+WORKING_DIR=<%= @working_dir %>
+BUNDLE_COMMAND=<%= @bundle_command %>
+GEMFILE=<%= @path_to_gemfile %>
+CUR_PID_FILE=<%= @unicorn_pid %>
+UNICORN_CONFIG=<%= @unicorn_config %>
+UNICORN_USER=<%= @user %>
+
+# don't tweak these two
+OLD_PID_FILE=$CUR_PID_FILE.oldbin
+UNICORN_GROUP=$UNICORN_USER
+
+# log STDERR to STDOUT
+exec 2>&1
+
+# tells unicorn where to find our 
+export BUNDLE_GEMFILE=$GEMFILE
+
+# helper function to determine if Unicorn is currently running
+# pass it a process ID, will return "yes" if it's running
+function is_unicorn_alive {
+    set +e
+    if [ -n $1 ] && kill -0 $1 >/dev/null 2>&1; then
+        echo "yes"
+    fi
+    set -e
+}
+
+# if we've got an _old_ PID file hanging out, wait for it to die
+if [ -e $OLD_PID_FILE ]; then
+    OLD_PID=$(cat $OLD_PID_FILE)
+    echo "Waiting for existing master ($OLD_PID) to exit"
+    while [ -n "$(is_unicorn_alive $OLD_PID)" ]; do
+        /bin/echo -n '.'
+        sleep 2
+    done
+fi
+
+# if we've got a current PID file, make sure it's actually got a unicorn
+# process running
+if [ -e $CUR_PID_FILE ]; then
+    CUR_PID=$(cat $CUR_PID_FILE)
+    if [ -n "$(is_unicorn_alive $CUR_PID)" ]; then
+        echo "Unicorn master already running. PID: $CUR_PID"
+        RUNNING=true
+    fi
+fi
+
+# if we've determined that unicorn is _NOT_ running, actually start it up
+if [ ! $RUNNING ]; then
+    echo "Starting unicorn"
+    cd $WORKING_DIR
+    exec /usr/bin/chpst -u $UNICORN_USER:$UNICORN_GROUP $BUNDLE_COMMAND exec unicorn -E production -c $UNICORN_CONFIG
+    sleep 3
+    CUR_PID=$(cat $CUR_PID_FILE)
+fi
+
+# helper function for restarting unicorn, gracefully
+function restart {
+    echo "Initialize new master with USR2"
+    kill -USR2 $CUR_PID
+
+    # force runit to restart and pick up the new unicorn PID
+    sleep 2
+    echo "Restarting service to capture new pid"
+    exit
+}
+
+# helper function for gracefully restarting unicorn
+# sending the QUIT signal tells Unicorn to tell its workers to finish
+# processing whatever they're working on and then die
+function graceful_shutdown {
+    echo "Initializing graceful shutdown"
+    kill -QUIT $CUR_PID
+}
+
+# helper to trap ALRM signals, don't worry about this one
+function unicorn_interrupted {
+    echo "Unicorn process interrupted. Runit raised ALRM signal."
+}
+
+# when sent a HUP/QUIT/USR2/INT signal, fire off the restart helper
+trap restart HUP QUIT USR2 INT
+
+# when sent a TERM/KILL signal, fire off the graceful_shutdown helper
+trap graceful_shutdown TERM KILL
+
+# when sent an ALRM signal, fire off the unicorn_interrupted helper
+trap unicorn_interrupted ALRM
+
+# if a signal above hasn't been sent, simply wait for unicorn to die
+echo "Waiting for current master process to die. PID: ($CUR_PID)"
+while [ -n "$(is_unicorn_alive $CUR_PID)" ]; do
+    sleep 2
+done
+echo "Unicorn is dead! Long live Unicorn!"
