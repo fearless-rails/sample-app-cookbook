@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # configuration variables
-WORKING_DIR=<%= @working_dir %>
-BUNDLE_COMMAND=<%= @bundle_command %>
-GEMFILE=<%= @path_to_gemfile %>
-CUR_PID_FILE=<%= @unicorn_pid %>
-UNICORN_CONFIG=<%= @unicorn_config %>
-UNICORN_USER=<%= @user %>
+WORKING_DIR=<%= @options[:working_dir] %>
+BUNDLE_COMMAND=<%= @options[:bundle_command] %>
+GEMFILE=<%= @options[:path_to_gemfile] %>
+CUR_PID_FILE=<%= @options[:unicorn_pid] %>
+UNICORN_CONFIG=<%= @options[:unicorn_config] %>
+UNICORN_USER=<%= @options[:user] %>
 
 # don't tweak these two
 OLD_PID_FILE=$CUR_PID_FILE.oldbin
