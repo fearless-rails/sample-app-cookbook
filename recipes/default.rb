@@ -133,3 +133,18 @@ runit_service 'sample-app-god' do
     :god_command => '/home/deploy/.rvm/bin/deploy_god'
   })
 end
+
+# install and configure nginx
+include_recipe "nginx"
+
+template "/etc/nginx/sites-available/#{node['sample-app']['hostname']}" do
+  source "sample-app-nginx.erb"
+  variables({
+    :app_name => node['sample-app']['app_name'],
+    :unicorn_socket => '/home/deploy/sample-app/shared/tmp/sockets/unicorn.sock',
+    :server_name    => node['sample-app']['app_name'],
+    :app_root       => '/home/deploy/sample-app/current/public'
+  })
+end
+
+nginx_site node['sample-app']['hostname']
