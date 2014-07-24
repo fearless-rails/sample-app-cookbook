@@ -137,14 +137,14 @@ end
 # install and configure nginx
 include_recipe "nginx"
 
-template "/etc/nginx/sites-available/#{node['sample-app']['hostname']}" do
+template "/etc/nginx/sites-available/sample-app.com" do
   source "sample-app-nginx.erb"
   variables({
     :app_name => node['sample-app']['app_name'],
     :unicorn_socket => '/home/deploy/sample-app/shared/tmp/sockets/unicorn.sock',
-    :server_name    => node['sample-app']['hostname'],
+    :server_name    => 'sample-app.com',
     :app_root       => '/home/deploy/sample-app/current/public'
   })
 end
 
-nginx_site node['sample-app']['hostname']
+nginx_site 'sample-app.com'
