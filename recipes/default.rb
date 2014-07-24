@@ -142,7 +142,7 @@ template "/etc/nginx/sites-available/#{node['sample-app']['hostname']}" do
   variables({
     :app_name => node['sample-app']['app_name'],
     :unicorn_socket => '/home/deploy/sample-app/shared/tmp/sockets/unicorn.sock',
-    :server_name    => node['sample-app']['host_name'],
+    :server_name    => node['sample-app']['hostname'],
     :app_root       => '/home/deploy/sample-app/current/public'
   })
 end
