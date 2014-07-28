@@ -1,29 +1,10 @@
 # sample-app-cookbook
 
-Provisions a server for the sample app included in [Fearless Rails Deployment](https://fearlessrailsdeployment.com).
+Provisions a server for the sample app included in [Fearless Rails Deployment](https://railsdeploymentbook.com).
 
 ## Supported Platforms
 
 Ubuntu 12.04 LTS
-
-## Attributes
-
-TODO: Make these real.
-
-<table>
-  <tr>
-    <th>Key</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>['sample-app']['bacon']</tt></td>
-    <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
-  </tr>
-</table>
 
 ## Usage
 
