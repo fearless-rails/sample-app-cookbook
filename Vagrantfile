@@ -11,6 +11,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
+  config.vm.provider :virtualbox do |v|
+    v.customize ["modifyvm", :id, "--memory", 1024, "--cpus", "2"]
+  end
+
   config.vm.hostname = "sample-app-berkshelf"
 
   # Set the version of chef to install using the vagrant-omnibus plugin
