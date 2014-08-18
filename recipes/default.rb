@@ -54,7 +54,8 @@ rvm_wrapper "deploy" do
 end
 
 # setup the deployment target directories and configuration files
-%w(sample-app sample-app/shared sample-app/shared/config sample-app/shared/tmp sample-app/shared/tmp/pids sample-app/shared/tmp/sockets).each do |dir|
+%w(sample-app sample-app/shared sample-app/shared/config sample-app/shared/tmp
+  sample-app/shared/tmp/pids sample-app/shared/tmp/sockets).each do |dir|
   directory "/home/deploy/#{dir}" do
     action :create
     owner "deploy"
