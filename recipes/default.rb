@@ -9,7 +9,7 @@
 include_recipe "apt"
 
 # install redis
-include_recipe "redisio::install"
+include_recipe "redisio"
 include_recipe "redisio::enable"
 
 # installs the postgresql server
